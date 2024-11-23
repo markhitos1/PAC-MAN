@@ -2,7 +2,7 @@
 const canvas = document.getElementById("canvas");
 const canvasContext = canvas.getContext("2d");
 const pacmanFrames = document.getElementById("animation");
-const ghostFrames = document.getElementById("ghost");
+const ghostFrames = document.getElementById("ghosts");
 
 
 let createRect = (x,y,width,height,color) =>{
@@ -17,12 +17,22 @@ let wallOffset = (oneBlockSize - wallSpaceWidth) / 2;
 let wallInerColor = 'black';
 let foodColor = "#feb897";
 let score = 0;
-let ghost =[];
+let ghosts =[];
+let ghostCount = 4;
 
 const DIRECTION_RIGHT = 4;
 const DIRECTION_UP = 3;
 const DIRECTION_LEFT = 2;
-const DIRECTION_BOTTON = 1;
+const DIRECTION_BOTTOM = 1;
+
+
+
+let ghostLocations = [
+    {x:0, y:0},
+    {x:176, y:0},
+    {x:0, y:121},
+    {x:176, y:121},
+];
 
 let map = [
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 ],
@@ -49,6 +59,16 @@ let map = [
     [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1 ],
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 ],
 
+];
+
+let randomTargetForGhosts = [
+    {x: 1 * oneBlockSize, y: 1 * oneBlockSize},
+    {x: 1* oneBlockSize, y: (map.length-2) * oneBlockSize},
+    {x:(map[0].length -2)* oneBlockSize, y: oneBlockSize},
+    {
+        x: (map[0].length -2) * oneBlockSize,
+        y:(map.length-2) * oneBlockSize
+    },
 ];
 
 let gameLoop =()=>{
@@ -84,6 +104,11 @@ let drawScore = () => {
     canvasContext.fillStyle = 'white';
     canvasContext.fillText('Score: '+score,0, oneBlockSize * (map.length + 1)+10);
 }
+let drawGhosts = ()=>{
+    for(let i = 0; i < ghostCount; i++){
+        ghosts[i].draw()
+    }
+}
 
 let draw = () =>{
     createRect(0,0, canvas.width, canvas.height, "black" )
@@ -91,6 +116,7 @@ let draw = () =>{
     drawFoods()
     pacman.draw()
     drawScore()
+    drawGhosts()
 };
 
 let gameInterval = setInterval(gameLoop, 1000 / fps);
@@ -156,15 +182,26 @@ let createNewPacman = () =>{
     )
 }
 let createGhosts = ()=>{
-    for(let i = 0; i < 1; i++){
+    ghosts = [];
+    for(let i = 0; i < ghostCount; i++){
         let newGhost = new Ghost(
            9* oneBlockSize + (i %2 == 0 ? 0 : 1) * oneBlockSize ,
-           
-        )
+           10* oneBlockSize + (i %2 == 0 ? 0 : 1) * oneBlockSize ,
+           oneBlockSize,
+           oneBlockSize,
+           pacman.speed/2,
+           ghostLocations[i %4].x,
+           ghostLocations[i %4].y,
+           124,
+           116,
+           6+i
+        );
+        ghosts.push(newGhost)
     }
 }
 
 createNewPacman();
+createGhosts();
 gameLoop();
 
 window.addEventListener('keydown',(event)=>{
@@ -181,7 +218,7 @@ window.addEventListener('keydown',(event)=>{
             pacman.nextDirection = DIRECTION_RIGHT
         }else if(k==40 || k == 83){
             //bottom
-            pacman.nextDirection = DIRECTION_BOTTON
+            pacman.nextDirection = DIRECTION_BOTTOM
         }
     })
 })

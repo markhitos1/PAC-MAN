@@ -1,7 +1,16 @@
 class Ghost {
-    constructor(x,y,width,
-        height,speed,imageY,imageX,
-        imageWidth,imageHeight,range){
+    constructor(
+        x,
+        y,
+        width,
+        height,
+        speed,
+        imageY,
+        imageX,
+        imageWidth,
+        imageHeight,
+        range
+    ){
 
         this.x = x;
         this.y = y;
@@ -14,10 +23,23 @@ class Ghost {
         this.imageWidth = imageWidth;
         this.imageHeight = imageHeight;
         this.range = range;
+        this.randomTargetIndex = parseInt(Math.random() * randomTargetForGhosts.length);
+        setInterval(()=>{
+            this.changeRandomDirection()
+        },10000)
+    }
+    changeRandomDirection(){
+        this.randomTargetIndex +=1;
+        this.randomTargetIndex =  this.randomTargetIndex % 4;
         
     }
 
     moveProcess(){
+        if(this.isInRangeOfPacman()){
+            target = pacman
+        }else{
+            this.target = randomTargetForGhosts[this.randomTargetIndex];
+        }
         this.changeDirectionIfPosible();
         this.moveForwards();
         if(this.checkCollision()){
@@ -25,21 +47,7 @@ class Ghost {
         }
     }
 
-    eat(){
-      for(let i = 0; i < map.length;i++){
-        for (let j = 0; j < map[0].length; j++) {
-          if(map[i][j]== 2 &&
-            this.getMapX() == j &&
-             this.getMapY() == i
-          ){
-            map[i][j] = 3;
-            score++;
-          }
-          
-        }
-      }
-    }
-    
+   
     moveBackwards(){  
         switch(this.direction){
             case DIRECTION_RIGHT:
@@ -51,7 +59,7 @@ class Ghost {
             case DIRECTION_LEFT:
             this.x += this.speed
               break
-            case DIRECTION_BOTTON:
+            case DIRECTION_BOTTOM:
             this.y -= this.speed
               break
         }
@@ -68,7 +76,7 @@ class Ghost {
             case DIRECTION_LEFT:
             this.x -= this.speed
               break
-            case DIRECTION_BOTTON:
+            case DIRECTION_BOTTOM:
             this.y += this.speed
               break
         }
@@ -88,11 +96,22 @@ class Ghost {
 
     checkGhostCollision(){}
 
-    changeDirectionIfPosible(){
-      if (this.direction == this.nextDirection) return
+    isInRangeOfPacman(){
+        let xDistance = Math.abs(pacman.getMapX()- this.getMapX());
+        let yDistance = Math.abs(pacman.getMapY()- this.getMapY());
+        if(Math.sqrt(xDistance*xDistance + yDistance*yDistance) <= this.range){
+            return true
+        }
+        return false
+    }
 
-      let temDirection = this.direction
-      this.direction = this.nextDirection
+    changeDirectionIfPosible(){
+        let temDirection = this.direction
+        this.direction = this.calculateDirection(
+            map,
+            parseInt(this.target.x/oneBlockSize),
+            parseInt(this.target.y/oneBlockSize),
+        )
       this.moveForwards()
       if(this.checkCollision()){
         this.moveBackwards();
@@ -109,7 +128,7 @@ class Ghost {
 
     draw(){
         canvasContext.save()
-             canvasContext.drawImage(
+        canvasContext.drawImage(
                 ghostFrames,
                 this.imageX,
                 this.imageY,
