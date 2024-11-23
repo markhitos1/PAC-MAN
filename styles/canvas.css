@@ -4,4 +4,14 @@ body{
     margin: 0;
     background-color: black;
     color: white;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    font-family: Emulogic;
 }
+
+@font-face {
+    font-family: 'Emulogic'; /* Nombre personalizado para la fuente */
+    src: url('/font/emulogic.ttf') format('woff2'); /* Formato recomendado */
+    font-weight: normal; /* Opcional: define peso */
+    font-style: normal; /* Opcional: define estilo */
+  }
