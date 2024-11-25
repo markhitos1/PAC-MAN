@@ -84,7 +84,17 @@ class Pacman {
         return false
     }
 
-    checkGhostCollision(){}
+    checkGhostCollision(){
+      for(let i = 0; i < ghosts.length;i++){
+        let ghost = ghosts[i];
+        if(ghost.getMapX() == this.getMapX() &&
+           ghost.getMapY() == this.getMapY()
+      ){
+        return true
+      }
+    }
+    return false
+    }
 
     changeDirectionIfPosible(){
       if (this.direction == this.nextDirection) return
@@ -111,7 +121,7 @@ class Pacman {
             this.x + oneBlockSize/2,
             this.y + oneBlockSize /2
             );
-             canvasContext.rotate((this.direction * 90 + Math.PI)/180)
+             canvasContext.rotate((this.direction * 280 + Math.PI)/180)
         canvasContext.translate(
                 -this.x - oneBlockSize/2,
                 -this.y - oneBlockSize /2
