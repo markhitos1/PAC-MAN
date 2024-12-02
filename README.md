@@ -1,2 +1,2 @@
 # PAC-MAN
-![970_1x_shots_so](https://github.com/user-attachments/assets/e93b5c06-be5a-4ee3-86c7-f6e5b81c682e)
+![PACMAN](https://github.com/user-attachments/assets/a24b4678-91e4-4585-a74c-b5aad644e30c)
